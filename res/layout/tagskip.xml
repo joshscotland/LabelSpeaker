@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/white"
+    android:gravity="center"
+    android:orientation="vertical" >
+
+    <mobile.accessibility.MyTextView
+        android:id="@+id/tagskipview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@color/green"
+        android:gravity="center_vertical|center_horizontal"
+        android:text="@string/startRecording"
+        android:textColor="@color/white"
+        android:textSize="36dip"
+        android:textStyle="bold" />
+
+</LinearLayout>
+

@@ -1,7 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="hello">Hello World, LabelSpeakerActivity!</string>
     <string name="app_name">LabelSpeaker</string>
+    <string name="homescreen_text">Label Speaker</string>
+    <string name="click_button">Capture</string>
+    <string name="browse_button">Browse</string>
+    <string name="options_button">Options</string>
+    <string name="tagItButton">Long Click:\n
+        START RECORDING\n\n
+        Tap:\n
+        FINISH RECORDING\n\n
+        Double Tap:\n
+        SKIP TAGGING</string>
+    <string name="skipTagButton">Skip</string>
+    <string name="startRecording">Start Recording</string>
+    <string name="stopRecording">Stop Recording</string>
+    <string name="delete_image">Delete Image</string>
+    <string name="share_image">Share Image</string>
+    <string name="confirm_delete">Confirm Delete</string>
+    <string name="cancel_delete">Cancel Delete</string>
+    <string name="cancel_button">Cancel</string>
+    <string name="verbose_instructions">Verbose Instructions</string>
+    <string name="no_voice_instructions">No Voice Instructions</string>
+    <string name="partial_instructions">Only Speak Screen Name</string>
+    <string name="at_sign">"@"</string>
+	<string name="question_mark">"?"</string>
+	<string name="num_punct">"?123"</string>
+	<string name="startrecording">Double Click to Start Recording</string>
 
 </resources>
