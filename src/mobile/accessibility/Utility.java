@@ -1,17 +1,24 @@
-/**
- * @author Abdelelah Salama(engobada@cs.washington.edu)
- * @author Chung Han(han@cs.washington.edu)
- * @author Nikhil Karkarey(nikhilkarkarey@gmail.com)
- * 
- * Talking Memories - MenuView
- * 
- * Designed to meet the requirements of the Winter 2012 UW course, 
- * CSE 481H: Accessibility Capstone
- * 
- * Set and Get global variables
+/*
+ * Copyright (C) 2012 Josh Scotland
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package mobile.accessibility;
+
+/*
+ * Set and Get global variables
+ */
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -110,6 +117,7 @@ public class Utility extends Application {
 		}
 	}
 	
+	// TODO: DELETE ME
 	public static void playInstructionsMP(Activity activity,int fullInst, int shortInst, SharedPreferences pref) {
 		if(mp != null) {
 			mp.reset();
@@ -122,6 +130,23 @@ public class Utility extends Application {
 		else if(option == 1) {
 			Utility.setMediaPlayer(MediaPlayer.create(activity, shortInst));
 			Utility.getMediaPlayer().start();
+		}
+		else {
+			vibrator.vibrate(150);
+		}
+	}
+	
+	// TODO: Make this the standard option
+	public static void playInstructionsMP(Activity activity, String fullInst, String shortInst, SharedPreferences pref) {
+		if(mp != null) {
+			mp.reset();
+		}
+		int option = pref.getInt(VOICE_INSTR_PREF, 0);
+		if(option == 0) {
+			Utility.getTextToSpeech().say(fullInst);
+		}
+		else if(option == 1) {
+			Utility.getTextToSpeech().say(shortInst);
 		}
 		else {
 			vibrator.vibrate(150);

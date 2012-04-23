@@ -43,88 +43,94 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Vibrator;
 
 public class LabelSpeakerActivity extends Activity {
-    private SharedPreferences mPreferences;
-	private MenuView menuView;
-	private DoubleClicker doubleClicker;
 	private static final String FILE_NUMBER = "fileNum";
 	public static final String PREF_NAME = "myPreferences";
 	private static final String VOICE_INSTR_PREF = "voiceInstructions";
 
-	// Called when the activity is first created
+	private SharedPreferences mPreferences;
+	private MenuView menuView;
+	private DoubleClicker doubleClicker;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		
+
 		//Initialize text to speech
 		Utility.setTextToSpeech(getApplicationContext());
-		
+
 		menuView = (MenuView) findViewById(R.id.home_view);
 		menuView.setFocusable(true);
 		menuView.setFocusableInTouchMode(true);
 		menuView.setRowListener(new MyRowListener());
-		menuView.setButtonNames("Capture", "Browse", "Options");
-		
+		menuView.setButtonNames(getString(R.string.label_button), 
+				getString(R.string.scan_button), getString(R.string.options_button));
+
 		doubleClicker = new DoubleClicker();
-	
+
 		setFileNumbering();
 		setInstructionPreferences();
 		Utility.setVibrator((Vibrator) getSystemService(Context.VIBRATOR_SERVICE));
-		Utility.playInstructionsMP(this, R.raw.hsfullinst, R.raw.hsshortinst, mPreferences);
-	}	
-    private class MyRowListener implements RowListener {
-    	
-        public void onRowOver() {
-        	Btn focusedButton = menuView.getFocusedButton();
+		Utility.playInstructionsMP(this, getString(R.string.home_screen_instructions), 
+				getString(R.string.home_screen), mPreferences);
+	}
+	
+	private class MyRowListener implements RowListener {
+
+		public void onRowOver() {
+			Btn focusedButton = menuView.getFocusedButton();
 			doubleClicker.click(focusedButton);
 
 			if (focusedButton == Btn.ONE) {
 				if (doubleClicker.isDoubleClicked()) {
-					launchPhotoTaker();
+					Utility.getTextToSpeech().say(getString(R.string.barcode_to_label));
+					
+					//Scan the barcode
+					IntentIntegrator integrator = new IntentIntegrator(LabelSpeakerActivity.this);
+					integrator.initiateScan();
 				} else {
-					playTakePhotos();
+					Utility.getTextToSpeech().say(getString(R.string.label_button));
 				}
 			} else if (focusedButton == Btn.TWO) {
 				if (doubleClicker.isDoubleClicked()) {
-					launchPhotoBrowse();
+					startActivity(new Intent(LabelSpeakerActivity.this, PhotoBrowse.class));
 				} else {
-					playBrowsePhotos();
+					Utility.getTextToSpeech().say(getString(R.string.scan_button));
 				}
 			} else if (focusedButton == Btn.THREE) {
 				if (doubleClicker.isDoubleClicked()) {
-					launchOptions();
+					startActivity(new Intent(LabelSpeakerActivity.this, SetOptions.class));
 				} else {
-					playOptions();
+					Utility.getTextToSpeech().say(getString(R.string.options_button));
 				}
 			}
 
 		}
-        
-        public void focusChanged() {
-        	doubleClicker.reset();
-        }
+
+		public void focusChanged() {
+			doubleClicker.reset();
+		}
 
 		public void onTwoFingersUp() {
 			exitApp();
 		}
 	}
-    
-    public void launchPhotoTaker() {
-    	startActivity(new Intent(this, PhotoTaker.class));
-    }
-    
-    public void launchPhotoBrowse() {
-    	startActivity(new Intent(this, PhotoBrowse.class));
-    }
-    
-    public void launchOptions() {
-    	startActivity(new Intent(this, SetOptions.class));
-    }
+	
+	// Handles scanned barcode results
+	public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+		IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+		if (scanResult != null && scanResult.getContents() != null) {
+			Utility.getTextToSpeech().say(getString(R.string.barcode_to_label_success));
+			
+			startActivity(new Intent(LabelSpeakerActivity.this, PhotoTaker.class));
+		} else {
+			// Utility.getTextToSpeech().say(getString(R.string.barcode_to_label_fail));
+		}
+	}
 
 	/*
 	 * Sets the file number counter in the application Shared Preferences for
@@ -139,9 +145,8 @@ public class LabelSpeakerActivity extends Activity {
 			editor.commit();
 		}
 	}
-	
+
 	private void setInstructionPreferences() {
-		
 		// initialize shared preferences
 		mPreferences = getSharedPreferences(PREF_NAME, Activity.MODE_PRIVATE);
 		if (!mPreferences.contains(VOICE_INSTR_PREF)) {
@@ -149,63 +154,37 @@ public class LabelSpeakerActivity extends Activity {
 			editor.putInt(VOICE_INSTR_PREF, 0);
 			editor.commit();
 		}
-		
 	}
-	
+
 	public void onStop(){
 		super.onStop();
 	}
-	
-	public void  onPause(){
+
+	public void onPause(){
 		super.onPause();
 	}
-	
+
 	public void onRestart(){
 		super.onRestart();
-		Utility.playInstructionsMP(this, R.raw.hsfullinst, R.raw.hsshortinst, mPreferences);
+		Utility.playInstructionsMP(this, getString(R.string.home_screen_instructions), 
+				getString(R.string.home_screen), mPreferences);
 		menuView.requestFocus();
 		menuView.resetButtonFocus();
 	}
-	
+
 	public void onResume() {
 		super.onResume();
-		Utility.playInstructionsMP(this, R.raw.hsfullinst, R.raw.hsshortinst, mPreferences);
-		menuView.requestFocus();
-		menuView.resetButtonFocus();
+		onRestart();
 	}
-	
+
 	@Override
 	public void onBackPressed() {
-	   return;
+		//Disable the back key
+		return;
 	}
-	
+
 	public void exitApp() {
-		Utility.getMediaPlayer().reset();
-		Utility.setMediaPlayer(MediaPlayer.create(this, R.raw.goodbye));
-		Utility.getMediaPlayer().start();
+		Utility.getTextToSpeech().say(getString(R.string.goodbye));
 		finish();
-	}
-	
-	// Play feedback over take button
-	public void playTakePhotos() {
-		generateMediaPlayer(MediaPlayer.create(this, R.raw.takephoto));
-	}
-	
-	// Play feedback over browse button
-	public void playBrowsePhotos() {
-		generateMediaPlayer(MediaPlayer.create(this, R.raw.browsephoto));
-	}
-	
-	// Play feedback over options button
-	public void playOptions() {
-		generateMediaPlayer(MediaPlayer.create(this, R.raw.options));
-	}
-	
-	public void generateMediaPlayer(MediaPlayer mp) {
-		if (Utility.getMediaPlayer() != null) {
-			Utility.getMediaPlayer().reset();
-		}
-		Utility.setMediaPlayer(mp);
-		Utility.getMediaPlayer().start();
 	}
 }

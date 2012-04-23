@@ -67,7 +67,10 @@ public class PhotoTaker extends Activity implements SurfaceHolder.Callback, Shut
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Utility.getMediaPlayer().reset();
+		if (Utility.getMediaPlayer() != null) {
+			Utility.getMediaPlayer().reset();
+		}
+		
 		setContentView(R.layout.clickpicture);
 		
 		//Initialize database

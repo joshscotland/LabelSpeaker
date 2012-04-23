@@ -1,11 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+	<!-- General -->
     <string name="app_name">LabelSpeaker</string>
     <string name="homescreen_text">Label Speaker</string>
-    <string name="click_button">Capture</string>
-    <string name="browse_button">Browse</string>
+    
+    <!-- LabelSpeakerActivity -->
+    <string name="home_screen">Home screen</string>
+    <string name="home_screen_instructions">Home screen. Touch screen to navigate, and double tap to take actions. 
+    	Use the two finger tap action to quit application.</string>
+    <string name="label_button">Label</string>
+    <string name="scan_button">Scan</string>
     <string name="options_button">Options</string>
+    <string name="barcode_to_label">Scan the barcode you want to label</string>
+    <string name="barcode_to_label_success">Scan success</string>
+    <string name="barcode_to_label_fail">Cancel scan</string>
+    <string name="goodbye">Good bye</string>
+    
+    
     <string name="tagItButton">Long Click:\n
         START RECORDING\n\n
         Tap:\n
